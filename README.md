@@ -1,36 +1,67 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# アプリ要件定義
 
-## Getting Started
+## 概要
 
-First, run the development server:
+日記投稿と毎日ルーティンの達成チェックができるアプリ。
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## 機能一覧
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### 1. 日記投稿機能
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- ユーザーが日記（テキスト）を投稿できる
+  - 投稿は何個でもOK
+- 過去の日記一覧を閲覧できる
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### 2. 毎日ルーティンチェック機能
 
-## Learn More
+- ルーティン（例：運動、勉強など）を登録できる
+  - ルーティン毎に曜日の設定ができる
+    - 毎日
+    - 特定の曜日
+  - ルーティン毎に行う時間を設定できる
+    - 朝
+    - 昼
+    - 夜
+    - いつでも
+  - 定量的なデータか設定できる
+    - 単位も合わせて入力できる
+    - 例
+      - 体重
+- その日のルーティンが完了したかチェックできる（チェックボックスなど）
+- ルーティンの達成状況を記録・閲覧できる
 
-To learn more about Next.js, take a look at the following resources:
+### 3. ユーザー管理（必要に応じて）
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- メールアドレスとパスワードでログインできる
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### 4. UI/UX
 
-## Deploy on Vercel
+- ログイン画面(/login)
+- 新規ユーザー登録画面(/register)
+- トップ画面(/)
+  - 日記投稿ボタン
+    - 新規日記投稿画面へ
+  - ルーティンチェックボタン
+    - ルーティンチェック画面へ
+  - カレンダー確認ボタン
+    - カレンダー画面へ
+  - ルーティン達成画面ボタン
+    - ルーティン達成画面へ
+  - ルーティン設定ボタン
+    - ルーティン設定画面へ
+- 新規日記投稿画面(/diary/new)
+  - 当日の日記を投稿できる
+- ルーティンチェック画面(/routine/check)
+  - 当日のルーティングをチェックできる
+- カレンダー画面(/calendar)
+  - カレンダーの曜日をクリックすることで、その日の日記とルーティングのチェック状況を確認できる
+- ルーティン達成画面(/routine/achievement)
+  - 日毎、週毎、月毎でルーティン達成度が分かる（グラフや集計表示を想定）
+- ルーティン設定画面(/routine/settings)
+  - 登録しているルーティンを確認できる
+  - 新規登録と編集ができる
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### 5. 構成
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- Supabase
+- Nextjs
