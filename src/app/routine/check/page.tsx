@@ -61,6 +61,7 @@ export default function RoutineCheckPage() {
     if (user) {
       fetchRoutines();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user, selectedDate]);
 
   const fetchRoutines = async () => {

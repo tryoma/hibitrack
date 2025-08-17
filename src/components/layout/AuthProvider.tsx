@@ -19,7 +19,7 @@ export default function AuthProvider({ children }: { children: React.ReactNode }
         router.push('/');
       }
     }
-  }, [user, loading, pathname, router]);
+  }, [user, loading, pathname, router, isAuthPage]);
 
   if (loading) {
     return (

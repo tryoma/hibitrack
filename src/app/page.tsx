@@ -40,6 +40,7 @@ export default function HomePage() {
     if (user) {
       fetchTodayStats();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]);
 
   const fetchTodayStats = async () => {

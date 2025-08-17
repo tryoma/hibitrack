@@ -63,6 +63,7 @@ export default function CalendarPage() {
     if (user) {
       fetchMonthData();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user, currentMonth]);
 
   const fetchMonthData = async () => {
@@ -247,116 +248,124 @@ export default function CalendarPage() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* カレンダー */}
           <div className="lg:col-span-2">
-            <div className="bg-white rounded-lg shadow overflow-hidden">
-              {/* カレンダーヘッダー */}
-              <div className="flex items-center justify-between p-6 border-b border-gray-200">
-                <h2 className="text-xl font-semibold text-gray-900">
-                  {format(currentMonth, 'yyyy年M月', { locale: ja })}
-                </h2>
-                <div className="flex items-center space-x-2">
-                  <button
-                    onClick={() => navigateMonth('prev')}
-                    className="p-2 text-gray-400 hover:text-gray-600 transition-colors"
-                  >
-                    <ChevronLeft className="w-5 h-5" />
-                  </button>
-                  <button
-                    onClick={() => navigateMonth('next')}
-                    className="p-2 text-gray-400 hover:text-gray-600 transition-colors"
-                  >
-                    <ChevronRight className="w-5 h-5" />
-                  </button>
-                </div>
+            {loading ? (
+              <div className="flex items-center justify-center h-96">
+                <span className="text-gray-500 text-lg">読み込み中...</span>
               </div>
-
-              {/* 曜日ヘッダー */}
-              <div className="grid grid-cols-7 border-b border-gray-200">
-                {['日', '月', '火', '水', '木', '金', '土'].map((day) => (
-                  <div key={day} className="p-3 text-center text-sm font-medium text-gray-500">
-                    {day}
+            ) : (
+              <>
+                <div className="bg-white rounded-lg shadow overflow-hidden">
+                  {/* カレンダーヘッダー */}
+                  <div className="flex items-center justify-between p-6 border-b border-gray-200">
+                    <h2 className="text-xl font-semibold text-gray-900">
+                      {format(currentMonth, 'yyyy年M月', { locale: ja })}
+                    </h2>
+                    <div className="flex items-center space-x-2">
+                      <button
+                        onClick={() => navigateMonth('prev')}
+                        className="p-2 text-gray-400 hover:text-gray-600 transition-colors"
+                      >
+                        <ChevronLeft className="w-5 h-5" />
+                      </button>
+                      <button
+                        onClick={() => navigateMonth('next')}
+                        className="p-2 text-gray-400 hover:text-gray-600 transition-colors"
+                      >
+                        <ChevronRight className="w-5 h-5" />
+                      </button>
+                    </div>
                   </div>
-                ))}
-              </div>
 
-              {/* カレンダー本体 */}
-              <div className="grid grid-cols-7">
-                {calendarDays.map((day) => {
-                  const dateString = format(day, 'yyyy-MM-dd');
-                  const dayData = monthData.get(dateString);
-                  const isSelected = selectedDate === dateString;
-                  const isTodayDate = isToday(day);
-
-                  return (
-                    <button
-                      key={dateString}
-                      onClick={() => handleDateClick(dateString)}
-                      className={`
-                        p-3 h-24 border-b border-r border-gray-200 text-left hover:bg-blue-50 transition-colors relative
-                        ${getDayColor(dayData)}
-                        ${isSelected ? 'ring-2 ring-blue-500 bg-blue-50' : ''}
-                        ${isTodayDate ? 'font-bold' : ''}
-                        ${!isSameMonth(day, currentMonth) ? 'text-gray-300' : ''}
-                      `}
-                    >
-                      <div className="text-sm font-medium">
-                        {format(day, 'd')}
-                        {isTodayDate && (
-                          <span className="ml-1 text-xs bg-blue-500 text-white px-1 rounded">
-                            今日
-                          </span>
-                        )}
+                  {/* 曜日ヘッダー */}
+                  <div className="grid grid-cols-7 border-b border-gray-200">
+                    {['日', '月', '火', '水', '木', '金', '土'].map((day) => (
+                      <div key={day} className="p-3 text-center text-sm font-medium text-gray-500">
+                        {day}
                       </div>
+                    ))}
+                  </div>
 
-                      {dayData && (
-                        <div className="mt-1 space-y-1">
-                          {dayData.diaryCount > 0 && (
-                            <div className="flex items-center text-xs text-blue-600">
-                              <BookOpen className="w-3 h-3 mr-1" />
-                              <span>{dayData.diaryCount}</span>
-                            </div>
-                          )}
-                          {dayData.routineStats.total > 0 && (
-                            <div className="flex items-center text-xs">
-                              <CheckCircle2 className="w-3 h-3 mr-1" />
-                              <span>
-                                {dayData.routineStats.completed}/{dayData.routineStats.total}
+                  {/* カレンダー本体 */}
+                  <div className="grid grid-cols-7">
+                    {calendarDays.map((day) => {
+                      const dateString = format(day, 'yyyy-MM-dd');
+                      const dayData = monthData.get(dateString);
+                      const isSelected = selectedDate === dateString;
+                      const isTodayDate = isToday(day);
+
+                      return (
+                        <button
+                          key={dateString}
+                          onClick={() => handleDateClick(dateString)}
+                          className={`
+                            p-3 h-24 border-b border-r border-gray-200 text-left hover:bg-blue-50 transition-colors relative
+                            ${getDayColor(dayData)}
+                            ${isSelected ? 'ring-2 ring-blue-500 bg-blue-50' : ''}
+                            ${isTodayDate ? 'font-bold' : ''}
+                            ${!isSameMonth(day, currentMonth) ? 'text-gray-300' : ''}
+                          `}
+                        >
+                          <div className="text-sm font-medium">
+                            {format(day, 'd')}
+                            {isTodayDate && (
+                              <span className="ml-1 text-xs bg-blue-500 text-white px-1 rounded">
+                                今日
                               </span>
+                            )}
+                          </div>
+
+                          {dayData && (
+                            <div className="mt-1 space-y-1">
+                              {dayData.diaryCount > 0 && (
+                                <div className="flex items-center text-xs text-blue-600">
+                                  <BookOpen className="w-3 h-3 mr-1" />
+                                  <span>{dayData.diaryCount}</span>
+                                </div>
+                              )}
+                              {dayData.routineStats.total > 0 && (
+                                <div className="flex items-center text-xs">
+                                  <CheckCircle2 className="w-3 h-3 mr-1" />
+                                  <span>
+                                    {dayData.routineStats.completed}/{dayData.routineStats.total}
+                                  </span>
+                                </div>
+                              )}
                             </div>
                           )}
-                        </div>
-                      )}
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
 
-            {/* 凡例 */}
-            <div className="mt-4 bg-white rounded-lg shadow p-4">
-              <h3 className="text-sm font-medium text-gray-900 mb-2">凡例</h3>
-              <div className="flex flex-wrap gap-4 text-xs">
-                <div className="flex items-center">
-                  <div className="w-4 h-4 bg-green-100 border border-green-200 rounded mr-2"></div>
-                  <span>達成率80%以上</span>
+                {/* 凡例 */}
+                <div className="mt-4 bg-white rounded-lg shadow p-4">
+                  <h3 className="text-sm font-medium text-gray-900 mb-2">凡例</h3>
+                  <div className="flex flex-wrap gap-4 text-xs">
+                    <div className="flex items-center">
+                      <div className="w-4 h-4 bg-green-100 border border-green-200 rounded mr-2"></div>
+                      <span>達成率80%以上</span>
+                    </div>
+                    <div className="flex items-center">
+                      <div className="w-4 h-4 bg-yellow-100 border border-yellow-200 rounded mr-2"></div>
+                      <span>達成率50-79%</span>
+                    </div>
+                    <div className="flex items-center">
+                      <div className="w-4 h-4 bg-red-100 border border-red-200 rounded mr-2"></div>
+                      <span>達成率50%未満</span>
+                    </div>
+                    <div className="flex items-center">
+                      <BookOpen className="w-4 h-4 text-blue-600 mr-1" />
+                      <span>日記</span>
+                    </div>
+                    <div className="flex items-center">
+                      <CheckCircle2 className="w-4 h-4 text-gray-600 mr-1" />
+                      <span>ルーティン</span>
+                    </div>
+                  </div>
                 </div>
-                <div className="flex items-center">
-                  <div className="w-4 h-4 bg-yellow-100 border border-yellow-200 rounded mr-2"></div>
-                  <span>達成率50-79%</span>
-                </div>
-                <div className="flex items-center">
-                  <div className="w-4 h-4 bg-red-100 border border-red-200 rounded mr-2"></div>
-                  <span>達成率50%未満</span>
-                </div>
-                <div className="flex items-center">
-                  <BookOpen className="w-4 h-4 text-blue-600 mr-1" />
-                  <span>日記</span>
-                </div>
-                <div className="flex items-center">
-                  <CheckCircle2 className="w-4 h-4 text-gray-600 mr-1" />
-                  <span>ルーティン</span>
-                </div>
-              </div>
-            </div>
+              </>
+            )}
           </div>
 
           {/* 詳細パネル */}

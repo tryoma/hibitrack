@@ -1,19 +1,10 @@
 // app/routine/achievement/page.tsx
 'use client';
 import { useState, useEffect } from 'react';
-import {
-  format,
-  subDays,
-  subWeeks,
-  subMonths,
-  startOfWeek,
-  endOfWeek,
-  eachDayOfInterval,
-} from 'date-fns';
-import { ja } from 'date-fns/locale';
+import { format, subWeeks, subMonths, startOfWeek, eachDayOfInterval } from 'date-fns';
 import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/hooks/useAuth';
-import { ArrowLeft, TrendingUp, Calendar, Target, Award, BarChart3 } from 'lucide-react';
+import { ArrowLeft, TrendingUp, Target, Award, BarChart3 } from 'lucide-react';
 import Link from 'next/link';
 import {
   LineChart,
@@ -23,8 +14,6 @@ import {
   CartesianGrid,
   Tooltip,
   ResponsiveContainer,
-  BarChart,
-  Bar,
   PieChart,
   Pie,
   Cell,
@@ -49,8 +38,6 @@ interface RoutineStats {
 
 type PeriodType = 'week' | 'month' | '3months';
 
-const COLORS = ['#10b981', '#f59e0b', '#ef4444', '#6b7280'];
-
 export default function RoutineAchievementPage() {
   const [period, setPeriod] = useState<PeriodType>('week');
   const [chartData, setChartData] = useState<ChartData[]>([]);
@@ -68,6 +55,7 @@ export default function RoutineAchievementPage() {
     if (user) {
       fetchAchievementData();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user, period]);
 
   const getPeriodDates = () => {
@@ -390,7 +378,7 @@ export default function RoutineAchievementPage() {
                         label={{ value: '達成率(%)', angle: -90, position: 'insideLeft' }}
                       />
                       <Tooltip
-                        formatter={(value: any, name: string) => [
+                        formatter={(value: number | string, name: string) => [
                           name === 'completionRate' ? `${value}%` : value,
                           name === 'completionRate' ? '達成率' : name,
                         ]}

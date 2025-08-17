@@ -62,6 +62,7 @@ export default function RoutineSettingsPage() {
     if (user) {
       fetchRoutines();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]);
 
   const fetchRoutines = async () => {
@@ -437,7 +438,7 @@ export default function RoutineSettingsPage() {
                                 onClick={() =>
                                   setFormData((prev) => ({
                                     ...prev,
-                                    time_of_day: option.value as any,
+                                    time_of_day: option.value as RoutineFormData['time_of_day'],
                                   }))
                                 }
                                 className={`flex items-center justify-center px-3 py-2 text-sm font-medium rounded-md transition-colors ${

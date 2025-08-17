@@ -1,7 +1,6 @@
 // app/diary/new/page.tsx
 'use client';
 import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
 import { format } from 'date-fns';
 import { ja } from 'date-fns/locale';
 import { supabase } from '@/lib/supabase';
@@ -22,12 +21,12 @@ export default function DiaryNewPage() {
   const [saving, setSaving] = useState(false);
   const [existingDiaries, setExistingDiaries] = useState<Diary[]>([]);
   const { user } = useAuth();
-  const router = useRouter();
 
   useEffect(() => {
     if (user) {
       fetchExistingDiaries();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user, selectedDate]);
 
   const fetchExistingDiaries = async () => {
