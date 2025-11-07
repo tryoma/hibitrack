@@ -172,7 +172,7 @@ export default function RoutineCheckPage() {
     const routine = routines.find((r) => r.id === routineId);
     if (!routine) return;
 
-    const isCompleted = routine.target_value ? value >= routine.target_value : value > 0;
+    const isCompleted = value > 0;
     updateRoutineRecord(routineId, isCompleted, value, notes);
   };
 
