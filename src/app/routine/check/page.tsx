@@ -85,10 +85,13 @@ export default function RoutineCheckPage() {
         return;
       }
 
-      // ルーティンの有効日でフィルタリング（updated_atの日付 <= 選択日のみ表示）
+      // ルーティンの有効日・削除日でフィルタリング
       const filteredRoutineData = routineData.filter((r) => {
         const effectiveDate = format(new Date(r.updated_at), 'yyyy-MM-dd');
-        return effectiveDate <= selectedDate;
+        const isEffective = effectiveDate <= selectedDate;
+        const isNotDeleted =
+          !r.deleted_at || format(new Date(r.deleted_at), 'yyyy-MM-dd') > selectedDate;
+        return isEffective && isNotDeleted;
       });
 
       if (filteredRoutineData.length === 0) {
