@@ -34,6 +34,7 @@ export interface Database {
           target_value: number | null;
           created_at: string;
           updated_at: string;
+          deleted_at: string | null;
         };
         Insert: {
           user_id: string;
@@ -54,6 +55,7 @@ export interface Database {
           unit?: string;
           target_value?: number;
           updated_at?: string;
+          deleted_at?: string | null;
         };
       };
       routine_records: {

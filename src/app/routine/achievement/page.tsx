@@ -91,7 +91,7 @@ export default function RoutineAchievementPage() {
       // ルーティン定義を取得
       const { data: routines } = await supabase
         .from('routines')
-        .select('id, name, unit, days_of_week, updated_at')
+        .select('id, name, unit, days_of_week, updated_at, deleted_at')
         .eq('user_id', user.id);
 
       if (!routines || routines.length === 0) {
@@ -127,11 +127,14 @@ export default function RoutineAchievementPage() {
         const dateStr = format(day, 'yyyy-MM-dd');
         const dayOfWeek = day.getDay();
 
-        // その日に設定されているルーティンを取得（有効日でフィルタリング）
+        // その日に設定されているルーティンを取得（有効日・削除日でフィルタリング）
         const dayRoutines =
           routines?.filter((r) => {
             const effectiveDate = format(new Date(r.updated_at), 'yyyy-MM-dd');
-            return r.days_of_week.includes(dayOfWeek) && effectiveDate <= dateStr;
+            const isEffective = r.days_of_week.includes(dayOfWeek) && effectiveDate <= dateStr;
+            const isNotDeleted =
+              !r.deleted_at || format(new Date(r.deleted_at), 'yyyy-MM-dd') > dateStr;
+            return isEffective && isNotDeleted;
           }) || [];
 
         const totalForDay = dayRoutines.length;
@@ -154,10 +157,11 @@ export default function RoutineAchievementPage() {
 
       setChartData(dailyData);
 
-      // ルーティン別統計を作成
+      // ルーティン別統計を作成（削除されていないルーティンのみ）
       const routineStatsData: RoutineStats[] = [];
+      const activeRoutines = routines.filter((r) => !r.deleted_at);
 
-      for (const routine of routines) {
+      for (const routine of activeRoutines) {
         const routineRecords = records?.filter((r) => r.routine_id === routine.id) || [];
         const completedDays = routineRecords.filter((r) => r.is_completed).length;
         const totalDays = routineRecords.length;
