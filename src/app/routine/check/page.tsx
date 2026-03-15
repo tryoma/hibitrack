@@ -85,8 +85,19 @@ export default function RoutineCheckPage() {
         return;
       }
 
+      // ルーティンの有効日でフィルタリング（updated_atの日付 <= 選択日のみ表示）
+      const filteredRoutineData = routineData.filter((r) => {
+        const effectiveDate = format(new Date(r.updated_at), 'yyyy-MM-dd');
+        return effectiveDate <= selectedDate;
+      });
+
+      if (filteredRoutineData.length === 0) {
+        setRoutines([]);
+        return;
+      }
+
       // その日の記録を取得
-      const routineIds = routineData.map((r) => r.id);
+      const routineIds = filteredRoutineData.map((r) => r.id);
       const { data: recordData } = await supabase
         .from('routine_records')
         .select('*')
@@ -95,7 +106,7 @@ export default function RoutineCheckPage() {
         .in('routine_id', routineIds);
 
       // データを結合
-      const routinesWithRecords = routineData.map((routine) => {
+      const routinesWithRecords = filteredRoutineData.map((routine) => {
         const record = recordData?.find((r) => r.routine_id === routine.id);
         return {
           ...routine,

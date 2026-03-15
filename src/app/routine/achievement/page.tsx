@@ -91,7 +91,7 @@ export default function RoutineAchievementPage() {
       // ルーティン定義を取得
       const { data: routines } = await supabase
         .from('routines')
-        .select('id, name, unit')
+        .select('id, name, unit, days_of_week, updated_at')
         .eq('user_id', user.id);
 
       if (!routines || routines.length === 0) {
@@ -127,16 +127,20 @@ export default function RoutineAchievementPage() {
         const dateStr = format(day, 'yyyy-MM-dd');
         const dayOfWeek = day.getDay();
 
-        // その日に設定されているルーティンを取得
-        const { data: dayRoutines } = await supabase
-          .from('routines')
-          .select('id')
-          .eq('user_id', user.id)
-          .contains('days_of_week', [dayOfWeek]);
+        // その日に設定されているルーティンを取得（有効日でフィルタリング）
+        const dayRoutines =
+          routines?.filter((r) => {
+            const effectiveDate = format(new Date(r.updated_at), 'yyyy-MM-dd');
+            return r.days_of_week.includes(dayOfWeek) && effectiveDate <= dateStr;
+          }) || [];
 
-        const totalForDay = dayRoutines?.length || 0;
+        const totalForDay = dayRoutines.length;
+        const effectiveRoutineIds = new Set(dayRoutines.map((r) => r.id));
         const completedForDay =
-          records?.filter((r) => r.record_date === dateStr && r.is_completed).length || 0;
+          records?.filter(
+            (r) =>
+              r.record_date === dateStr && r.is_completed && effectiveRoutineIds.has(r.routine_id),
+          ).length || 0;
 
         const completionRate = totalForDay > 0 ? (completedForDay / totalForDay) * 100 : 0;
 

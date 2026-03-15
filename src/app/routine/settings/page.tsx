@@ -106,10 +106,10 @@ export default function RoutineSettingsPage() {
       };
 
       if (editingRoutine) {
-        // 更新
+        // 更新（updated_atを明示的に設定し、今日以降のみ反映されるようにする）
         const { error } = await supabase
           .from('routines')
-          .update(routineData)
+          .update({ ...routineData, updated_at: new Date().toISOString() })
           .eq('id', editingRoutine.id);
 
         if (error) throw error;

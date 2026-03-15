@@ -53,6 +53,7 @@ export interface Database {
           is_quantifiable?: boolean;
           unit?: string;
           target_value?: number;
+          updated_at?: string;
         };
       };
       routine_records: {
