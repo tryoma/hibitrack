@@ -53,11 +53,18 @@ export default function HomePage() {
       // 今日のルーティン統計を取得
       const { data: routines } = await supabase
         .from('routines')
-        .select('id, name')
+        .select('id, name, updated_at')
         .eq('user_id', user.id)
         .contains('days_of_week', [dayOfWeek]);
 
-      const routineIds = routines?.map((r) => r.id) || [];
+      // 有効日でフィルタリング（updated_atの日付 <= 今日のみ表示）
+      const filteredRoutines =
+        routines?.filter((r) => {
+          const effectiveDate = format(new Date(r.updated_at), 'yyyy-MM-dd');
+          return effectiveDate <= todayString;
+        }) || [];
+
+      const routineIds = filteredRoutines.map((r) => r.id);
 
       let completedCount = 0;
       if (routineIds.length > 0) {
@@ -79,7 +86,7 @@ export default function HomePage() {
         .eq('user_id', user.id)
         .eq('diary_date', todayString);
 
-      const totalRoutines = routines?.length || 0;
+      const totalRoutines = filteredRoutines.length;
       const completionRate = totalRoutines > 0 ? (completedCount / totalRoutines) * 100 : 0;
 
       setTodayStats({
