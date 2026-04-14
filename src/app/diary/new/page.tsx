@@ -7,6 +7,7 @@ import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/hooks/useAuth';
 import { Save, ArrowLeft, Calendar, BookOpen } from 'lucide-react';
 import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
 
 interface Diary {
   id: string;
@@ -15,8 +16,11 @@ interface Diary {
 }
 
 export default function DiaryNewPage() {
+  const searchParams = useSearchParams();
   const [content, setContent] = useState('');
-  const [selectedDate, setSelectedDate] = useState(format(new Date(), 'yyyy-MM-dd'));
+  const [selectedDate, setSelectedDate] = useState(
+    searchParams.get('date') || format(new Date(), 'yyyy-MM-dd'),
+  );
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
   const [existingDiaries, setExistingDiaries] = useState<Diary[]>([]);
