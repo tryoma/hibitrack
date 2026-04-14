@@ -302,6 +302,13 @@ export default function CalendarPage() {
 
                   {/* カレンダー本体 */}
                   <div className="grid grid-cols-7">
+                    {/* 月初の曜日に合わせて空セルを追加 */}
+                    {Array.from({ length: monthStart.getDay() }).map((_, i) => (
+                      <div
+                        key={`empty-${i}`}
+                        className="p-3 h-24 border-b border-r border-gray-200 bg-gray-50"
+                      />
+                    ))}
                     {calendarDays.map((day) => {
                       const dateString = format(day, 'yyyy-MM-dd');
                       const dayData = monthData.get(dateString);
