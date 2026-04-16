@@ -19,6 +19,7 @@ import {
   RotateCcw,
 } from 'lucide-react';
 import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
 
 interface RoutineWithRecord {
   id: string;
@@ -51,8 +52,11 @@ const timeOfDayLabels = {
 };
 
 export default function RoutineCheckPage() {
+  const searchParams = useSearchParams();
   const [routines, setRoutines] = useState<RoutineWithRecord[]>([]);
-  const [selectedDate, setSelectedDate] = useState(format(new Date(), 'yyyy-MM-dd'));
+  const [selectedDate, setSelectedDate] = useState(
+    searchParams.get('date') || format(new Date(), 'yyyy-MM-dd'),
+  );
   const [loading, setLoading] = useState(true);
   const [updating, setUpdating] = useState<string | null>(null);
   const { user } = useAuth();
