@@ -95,7 +95,7 @@ export default function CalendarPage() {
       // ルーティン定義を取得（曜日チェック用）
       const { data: routines } = await supabase
         .from('routines')
-        .select('id, days_of_week, updated_at')
+        .select('id, days_of_week, updated_at, deleted_at')
         .eq('user_id', user.id);
 
       // データをマップに整理
@@ -112,11 +112,14 @@ export default function CalendarPage() {
         const dayDiaries = diaries?.filter((d) => d.diary_date === dateString) || [];
         const diaryCount = dayDiaries.length;
 
-        // その日に設定されているルーティン（有効日でフィルタリング）
+        // その日に設定されているルーティン（有効日・削除日でフィルタリング）
         const dayRoutines =
           routines?.filter((r) => {
             const effectiveDate = format(new Date(r.updated_at), 'yyyy-MM-dd');
-            return r.days_of_week.includes(dayOfWeek) && effectiveDate <= dateString;
+            const isEffective = r.days_of_week.includes(dayOfWeek) && effectiveDate <= dateString;
+            const isNotDeleted =
+              !r.deleted_at || format(new Date(r.deleted_at), 'yyyy-MM-dd') > dateString;
+            return isEffective && isNotDeleted;
           }) || [];
 
         // その日のルーティン記録（有効なルーティンのみ）
@@ -174,6 +177,7 @@ export default function CalendarPage() {
           name,
           unit,
           updated_at,
+          deleted_at,
           routine_records!inner(
             is_completed,
             actual_value
@@ -184,10 +188,12 @@ export default function CalendarPage() {
         .contains('days_of_week', [dayOfWeek])
         .eq('routine_records.record_date', date);
 
-      // 有効日でフィルタリング
+      // 有効日・削除日でフィルタリング
       const filteredRoutines = routines?.filter((r) => {
         const effectiveDate = format(new Date(r.updated_at), 'yyyy-MM-dd');
-        return effectiveDate <= date;
+        const isEffective = effectiveDate <= date;
+        const isNotDeleted = !r.deleted_at || format(new Date(r.deleted_at), 'yyyy-MM-dd') > date;
+        return isEffective && isNotDeleted;
       });
 
       const routineData =

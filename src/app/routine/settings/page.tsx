@@ -74,6 +74,7 @@ export default function RoutineSettingsPage() {
         .from('routines')
         .select('*')
         .eq('user_id', user.id)
+        .is('deleted_at', null)
         .order('created_at', { ascending: false });
 
       if (error) throw error;
@@ -145,12 +146,20 @@ export default function RoutineSettingsPage() {
   };
 
   const handleDelete = async (routine: Routine) => {
-    if (!confirm(`「${routine.name}」を削除しますか？関連する記録もすべて削除されます。`)) {
+    if (
+      !confirm(
+        `「${routine.name}」を削除しますか？今日以降のルーティンから削除されます。過去の記録は保持されます。`,
+      )
+    ) {
       return;
     }
 
     try {
-      const { error } = await supabase.from('routines').delete().eq('id', routine.id);
+      // ソフトデリート：deleted_atを設定して今日以降のみ削除を反映
+      const { error } = await supabase
+        .from('routines')
+        .update({ deleted_at: new Date().toISOString() })
+        .eq('id', routine.id);
 
       if (error) throw error;
       await fetchRoutines();

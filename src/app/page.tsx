@@ -53,15 +53,18 @@ export default function HomePage() {
       // 今日のルーティン統計を取得
       const { data: routines } = await supabase
         .from('routines')
-        .select('id, name, updated_at')
+        .select('id, name, updated_at, deleted_at')
         .eq('user_id', user.id)
         .contains('days_of_week', [dayOfWeek]);
 
-      // 有効日でフィルタリング（updated_atの日付 <= 今日のみ表示）
+      // 有効日・削除日でフィルタリング
       const filteredRoutines =
         routines?.filter((r) => {
           const effectiveDate = format(new Date(r.updated_at), 'yyyy-MM-dd');
-          return effectiveDate <= todayString;
+          const isEffective = effectiveDate <= todayString;
+          const isNotDeleted =
+            !r.deleted_at || format(new Date(r.deleted_at), 'yyyy-MM-dd') > todayString;
+          return isEffective && isNotDeleted;
         }) || [];
 
       const routineIds = filteredRoutines.map((r) => r.id);
